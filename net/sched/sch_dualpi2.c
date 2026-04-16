@@ -885,6 +885,7 @@ nla_put_failure:
 static int dualpi2_dump_stats(struct Qdisc *sch, struct gnet_dump *d)
 {
 	struct dualpi2_sched_data *q = qdisc_priv(sch);
+	u32 qlen_l = qdisc_qlen(q->l_queue);
 	struct tc_dualpi2_xstats st = {
 		.prob		= READ_ONCE(q->pi2.prob),
 		.packets_in_c	= q->packets_in_c,
@@ -893,6 +894,8 @@ static int dualpi2_dump_stats(struct Qdisc *sch, struct gnet_dump *d)
 		.ecn_mark	= q->ecn_mark,
 		.credit		= q->c_protection.credit,
 		.step_marks	= q->step_marks,
+		.qlen_l		= qlen_l,
+		.qlen_c		= qdisc_qlen(sch) - qlen_l,
 	};
 	u64 qc, ql;
 
